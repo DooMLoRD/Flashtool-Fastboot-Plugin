@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="run" name="Deploy Fastboot Plugin Test1">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="run">
+        <delete dir="G:\Deploy\FlashTool\custom\features\FastbootPlugin"/>
+        <mkdir dir="G:\Deploy\FlashTool\custom\features\FastbootPlugin"/>
+    	<jar destfile="G:\Deploy\FlashTool\custom\features\FastbootPlugin\FastbootPlugin.jar">
+            <fileset dir="./bin"/>
+        </jar>
+    	<copy file="./feature.properties" todir="G:\Deploy\FlashTool\custom\features\FastbootPlugin"/>
+    </target>
+</project>
