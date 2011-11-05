@@ -1,5 +1,8 @@
 package org.plugins.fastbootplugin;
 
+import gui.FlasherGUI;
+import gui.WaitDeviceFastbootGUI;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -19,7 +22,6 @@ import javax.swing.SwingConstants;
 import org.adb.FastbootUtility;
 import org.lang.Language;
 import org.logger.MyLogger;
-import org.system.OS;
 
 public class Toolbox extends JDialog {
 
@@ -149,18 +151,21 @@ public class Toolbox extends JDialog {
 			JButton btnSelectBootimgToHotBoot = new JButton("Select boot.img to HotBoot");
 			btnSelectBootimgToHotBoot.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					try {
-						String bootimg = chooseBootimg();
-						MyLogger.debug(bootimg);
-						//FastbootUtility.hotBoot(bootimg);
-					}
-					catch (Exception e1) {
-						MyLogger.error(e1.getMessage());
-					}
+					hotbootKernel();
 				}
 			});
-			btnSelectBootimgToHotBoot.setBounds(10, 154, 248, 23);
+			btnSelectBootimgToHotBoot.setBounds(43, 197, 163, 23);
 			contentPanel.add(btnSelectBootimgToHotBoot);
+		}
+		{
+			JButton btnSelectBootimgToFlash = new JButton("Select boot.img to Flash");
+			btnSelectBootimgToFlash.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					flashKernel();
+				}
+			});
+			btnSelectBootimgToFlash.setBounds(216, 197, 163, 23);
+			contentPanel.add(btnSelectBootimgToFlash);
 		}
 		
 		{
@@ -185,6 +190,60 @@ public class Toolbox extends JDialog {
 	
 	public void setLanguage() {
 		Language.translate(this);
+	}
+
+	public void hotbootKernel() {
+		try {
+			String bootimg = chooseBootimg();
+			
+			if(bootimg.equals("ERROR")) {
+				MyLogger.error("no kernel (boot.img) selected!");
+			} 
+			else {
+				
+				MyLogger.info("Selected kernel (boot.img): " + bootimg);
+
+				// just to make sure that device is in fastboot mode
+				MyLogger.debug("rebooting device into fastboot mode");
+				FastbootUtility.adbRebootFastboot();
+				// this wont wait for reply and will move on to next command
+
+				MyLogger.info("HotBooting selected kernel");
+				FastbootUtility.hotBoot(bootimg);
+			}
+		}
+		catch (Exception e1) {
+			MyLogger.error(e1.getMessage());
+		}
+
+	}
+	
+	public void flashKernel() {
+		try {
+			String bootimg = chooseBootimg();
+			
+			if(bootimg.equals("ERROR")) {
+				MyLogger.error("no kernel (boot.img) selected!");
+			} 
+			else {
+				
+				MyLogger.info("Selected kernel (boot.img): " + bootimg);
+				
+				// just to make sure that device is in fastboot mode
+				MyLogger.debug("rebooting device into fastboot mode");
+				FastbootUtility.adbRebootFastboot();
+				// this wont wait for reply and will move on to next command
+				
+				MyLogger.info("Flashing selected kernel");
+				FastbootUtility.flashBoot(bootimg);
+				
+				MyLogger.info("Rebooting device");
+				FastbootUtility.rebootDevice();
+			}
+		}
+		catch (Exception e1) {
+			MyLogger.error(e1.getMessage());
+		}
 	}
 	
 	public String chooseBootimg() {
