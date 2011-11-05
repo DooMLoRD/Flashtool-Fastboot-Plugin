@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import javax.swing.filechooser.FileFilter;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -185,9 +188,21 @@ public class Toolbox extends JDialog {
 	}
 	
 	public String chooseBootimg() {
-		JFileChooser chooser = new JFileChooser(); 
-		kernelimgFileFilter newkernelimgFileFilter = new kernelimgFileFilter();
-		chooser.setCurrentDirectory(new java.io.File("."));
+		JFileChooser chooser = new JFileChooser(new java.io.File(".")); 
+
+		FileFilter ff = new FileFilter(){
+			public boolean accept(File f){
+				if(f.isDirectory()) return true;
+				else if(f.getName().endsWith(".img")) return true;
+					else return false;
+			}
+			public String getDescription(){
+				return "IMG files";
+			}
+		};
+		 
+		chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter());
+		chooser.setFileFilter(ff);
 		
 	    chooser.setDialogTitle("Choose kernel file (boot.img)");
 	    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
