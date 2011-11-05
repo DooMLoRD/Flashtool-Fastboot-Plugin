@@ -18,10 +18,6 @@ public class Test1 extends PluginDefaults implements org.plugins.PluginInterface
 			
 			showToolbox();
 			
-			/*
-			MyLogger.info("rebooting into fastboot mode");
-			FastbootUtility.adbRebootFastboot();
-			*/
 			MyLogger.info("Fastboot Plugin Test1 has finished");
 
 		}
